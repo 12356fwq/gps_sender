@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GPS送信</title>
+</head>
+<body>
+  <h1>現在地を送信中…</h1>
+
+  <script>
+    // URLパラメータから user_id を取得
+    const params = new URLSearchParams(window.location.search);
+    const user_id = params.get('user_id') || 0;
+
+    // 位置取得
+    if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        pos => {
+            const latitude = pos.coords.latitude;
+            const longitude = pos.coords.longitude;
+
+        fetch('self_position.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id,
+                latitude,
+                longitude
+            })
+        }).then(res => {
+            alert('おまえの位置情報を送信しました！');
+        });
+        },
+        err => {
+            alert('位置情報取得に失敗しました');
+            console.error(err);
+        }
+    );
+    } else {
+    alert('この端末では位置情報が取得できません');
+    }
+</script>
+</body>
+</html>
+
